@@ -4,179 +4,228 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Rajdhani:wght@300;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:ital,wght@0,300;0,600;1,900&display=swap" rel="stylesheet">
     <style>
-        :root { --main: #00f2ff; --warn: #ff0055; --gold: #ffd700; --bg: #010409; }
-        body { background: var(--bg); color: white; font-family: 'Rajdhani', sans-serif; overflow-x: hidden; }
-        .font-orb { font-family: 'Orbitron', sans-serif; }
-        .glass { background: rgba(13, 17, 23, 0.95); backdrop-filter: blur(15px); border: 1px solid rgba(0, 242, 255, 0.2); }
+        :root { --sys-blue: #00d2ff; --sys-dark: #02060c; --sys-panel: rgba(6, 11, 20, 0.95); }
+        body { 
+            background: var(--sys-dark); color: white; 
+            font-family: 'Exo 2', sans-serif; overflow-x: hidden;
+            background-image: linear-gradient(to bottom, #02060c, #050a1b);
+            min-height: 100vh;
+        }
+        .font-sys { font-family: 'Orbitron', sans-serif; }
+        .system-panel {
+            background: var(--sys-panel);
+            border: 1px solid rgba(0, 210, 255, 0.2);
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            border-radius: 2px;
+        }
+        .rank-glitch { animation: glitch 4s infinite; text-shadow: 0 0 10px var(--sys-blue); }
+        @keyframes glitch { 0%, 90% { opacity: 1; transform: skew(0); } 92% { opacity: 0.8; transform: skew(2deg); } 94% { opacity: 1; transform: skew(-2deg); } }
         .bar-fill { transition: width 1s cubic-bezier(0.1, 0.7, 0.1, 1); }
-        .neon-text { text-shadow: 0 0 10px var(--main); }
-        .rank-up-anim { animation: rank-glow 2s infinite; }
-        @keyframes rank-glow { 0% { text-shadow: 0 0 5px #fff; } 50% { text-shadow: 0 0 20px var(--main); } 100% { text-shadow: 0 0 5px #fff; } }
-        .tab-active { color: var(--main); border-bottom: 3px solid var(--main); font-weight: 900; font-size: 14px; }
+        .tab-active { color: var(--sys-blue); border-bottom: 3px solid var(--sys-blue); text-shadow: 0 0 8px var(--sys-blue); }
+        .btn-action { 
+            background: linear-gradient(135deg, #003366, #00d2ff);
+            clip-path: polygon(5% 0, 100% 0, 95% 100%, 0% 100%);
+        }
         ::-webkit-scrollbar { display: none; }
-        .card-workout { border-left: 5px solid var(--main); transition: 0.3s; }
-        .card-workout:active { transform: scale(0.97); background: rgba(0, 242, 255, 0.05); }
     </style>
 </head>
-<body class="p-4 pb-40">
+<body class="p-4 pb-32">
 
-    <div id="rest-overlay" class="hidden fixed inset-0 z-[200] bg-black/98 flex flex-col items-center justify-center">
-        <h2 class="font-orb text-cyan-400 tracking-[0.4em] mb-8 text-xl animate-pulse">RECUPERAÇÃO ATIVA</h2>
-        <div id="timer-display" class="text-9xl font-orb font-black text-white">60</div>
-        <button onclick="skipRest()" class="mt-12 px-10 py-3 border border-cyan-500 text-cyan-500 text-xs font-bold rounded-full uppercase">Pular</button>
+    <div id="rest-overlay" class="hidden fixed inset-0 z-[500] bg-black/98 flex flex-col items-center justify-center">
+        <div class="text-center">
+            <h2 class="font-sys text-cyan-500 tracking-[0.5em] text-sm mb-4 animate-pulse">RECUPERAÇÃO EM ANDAMENTO</h2>
+            <div id="timer-display" class="text-9xl font-sys font-black mb-10 text-white">60</div>
+            <button onclick="skipRest()" class="border border-cyan-900 text-cyan-900 px-8 py-2 rounded-full text-[10px] uppercase font-black">Pular</button>
+        </div>
     </div>
 
-    <header class="mb-6 glass p-6 rounded-3xl sticky top-0 z-50 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
-        <div class="flex justify-between items-start">
+    <header class="mb-6 mt-2">
+        <div class="flex justify-between items-end mb-4">
             <div>
-                <p id="daily-msg" class="text-[10px] text-cyan-500 font-bold uppercase mb-1 tracking-[0.2em] italic underline">Sincronização Estabilizada</p>
-                <h1 id="rank" class="text-5xl font-black italic font-orb rank-up-anim uppercase">RANK D</h1>
+                <p id="daily-msg" class="text-[9px] text-cyan-500 font-bold uppercase tracking-widest mb-1 italic">Sincronização com o Monarca...</p>
+                <h1 id="rank" class="text-5xl font-sys font-black rank-glitch italic uppercase">RANK D</h1>
             </div>
             <div class="text-right">
-                <p class="text-[10px] text-gray-600 font-bold uppercase">Nível</p>
-                <p class="text-6xl font-black text-white font-orb leading-none" id="lvl-display">01</p>
+                <p class="text-[9px] text-gray-500 uppercase font-bold tracking-widest">Nível</p>
+                <p id="lvl-display" class="text-5xl font-sys font-black text-white leading-none">01</p>
             </div>
         </div>
 
-        <div class="mt-6 space-y-4">
+        <div class="system-panel p-5 space-y-5">
             <div>
-                <div class="flex justify-between text-[11px] font-bold mb-1 uppercase tracking-widest">
-                    <span class="text-cyan-400">Progresso de XP</span>
-                    <span><span id="xp-n">0</span> / <span id="next-xp-n">1000</span></span>
+                <div class="flex justify-between text-[10px] font-bold mb-1 tracking-widest">
+                    <span class="text-cyan-400 italic">XP DO JOGADOR</span>
+                    <span id="xp-n-txt">0 / 1000</span>
                 </div>
-                <div class="h-3 bg-gray-950 rounded-full border border-white/5 p-[2px]">
-                    <div id="xp-b" class="bar-fill h-full bg-gradient-to-r from-cyan-600 to-cyan-400 rounded-full" style="width: 0%"></div>
+                <div class="h-2 bg-black/50 border border-white/5 overflow-hidden">
+                    <div id="xp-b" class="bar-fill h-full bg-cyan-400" style="width: 0%"></div>
                 </div>
             </div>
             <div>
-                <div class="flex justify-between text-[11px] font-bold mb-1 uppercase tracking-widest text-rose-500">
-                    <span>Vitalidade (HP)</span>
-                    <span><span id="hp-n">100</span>%</span>
+                <div class="flex justify-between text-[10px] font-bold mb-1 tracking-widest text-rose-500">
+                    <span class="italic">VITALIDADE (HP)</span>
+                    <span id="hp-n">100%</span>
                 </div>
-                <div class="h-2 bg-gray-950 rounded-full border border-white/5">
-                    <div id="hp-b" class="bar-fill h-full bg-rose-600 shadow-[0_0_10px_#e11d48]" style="width: 100%"></div>
+                <div class="h-1.5 bg-black/50 border border-white/5 overflow-hidden">
+                    <div id="hp-b" class="bar-fill h-full bg-rose-600 shadow-[0_0_10px_red]" style="width: 100%"></div>
                 </div>
             </div>
         </div>
     </header>
 
-    <nav class="flex justify-around mb-8 border-b border-white/10 text-[12px] font-bold uppercase tracking-[0.2em]">
-        <button onclick="showTab('missões')" id="btn-missões" class="tab-active pb-4 px-4">Combate</button>
-        <button onclick="showTab('guia')" id="btn-guia" class="pb-4 px-4 text-gray-500">Manual</button>
-        <button onclick="showTab('stats')" id="btn-stats" class="pb-4 px-4 text-gray-500">Status</button>
+    <nav class="flex justify-around mb-8 border-b border-white/5 text-[11px] font-sys font-black uppercase tracking-widest">
+        <button onclick="showTab('missões')" id="btn-missões" class="tab-active py-3 px-2">Combate</button>
+        <button onclick="showTab('stats')" id="btn-stats" class="py-3 px-2 text-gray-600">Atributos</button>
+        <button onclick="showTab('guia')" id="btn-guia" class="py-3 px-2 text-gray-600">Manual</button>
     </nav>
 
-    <div id="tab-missões" class="space-y-5"></div>
+    <div id="tab-missões" class="space-y-6"></div>
 
-    <div id="tab-guia" class="hidden space-y-6 pb-20">
-        <div class="glass p-8 rounded-[2rem] border-l-4 border-cyan-500">
-            <h3 class="text-cyan-400 font-orb text-sm mb-6 uppercase tracking-[0.3em]">Protocolo de Campo</h3>
-            <div class="text-[15px] space-y-6 text-gray-200 leading-relaxed">
-                <p><b class="text-white text-lg">01. CADÊNCIA 2-1-2:</b><br>Desça em 2 segundos, segure 1 segundo no limite, suba em 2 segundos. Sem balanço!</p>
-                <p><b class="text-white text-lg">02. TREINO HÍBRIDO:</b><br>Use o peso do corpo. Se estiver fácil, use uma mochila com livros ou galões de água.</p>
-                <p><b class="text-white text-lg">03. PENALIDADE REAL:</b><br>Se o sistema não detectar treino em 24h, sua vitalidade cairá. Não ignore o chamado.</p>
+    <div id="tab-stats" class="hidden space-y-6">
+        <div class="grid grid-cols-2 gap-4">
+            <div class="system-panel p-6 text-center">
+                <p class="text-[9px] text-gray-500 uppercase mb-2">Força (STR)</p>
+                <p id="s-for" class="text-4xl font-sys text-white font-black">10</p>
             </div>
+            <div class="system-panel p-6 text-center">
+                <p class="text-[9px] text-gray-500 uppercase mb-2">Agilidade (AGI)</p>
+                <p id="s-agi" class="text-4xl font-sys text-white font-black">10</p>
+            </div>
+        </div>
+        <div class="system-panel p-6">
+            <h3 class="font-sys text-cyan-400 text-xs mb-6 uppercase tracking-[0.2em] italic border-l-2 border-cyan-400 pl-3">Habilidades Passivas</h3>
+            <div id="skills-list" class="space-y-6"></div>
+            <button onclick="resetAll()" class="w-full mt-12 text-[8px] text-red-900 font-black uppercase opacity-20">Resetar Sistema</button>
         </div>
     </div>
 
-    <div id="tab-stats" class="hidden space-y-4">
-        <div class="grid grid-cols-2 gap-4">
-            <div class="glass p-6 rounded-3xl border-b-4 border-cyan-900">
-                <p class="text-[10px] text-gray-500 uppercase font-bold mb-2">Força (STR)</p>
-                <p id="s-for" class="text-4xl font-black text-white font-orb">10</p>
+    <div id="tab-guia" class="hidden space-y-6">
+        <div class="system-panel p-6 border-l-4 border-cyan-500">
+            <h3 class="font-sys text-cyan-400 text-xs mb-4 uppercase italic">Protocolo Monarca</h3>
+            <div class="text-[13px] space-y-5 text-gray-300 uppercase leading-relaxed tracking-tight">
+                <p><b class="text-white">1. Cadência 2-1-2:</b> O sistema exige 2s na descida, 1s de pausa estática e 2s na subida. Falhar na técnica anula o ganho.</p>
+                <p><b class="text-white">2. Sobrecarga Híbrida:</b> Se o Rank D for fácil, utilize mochilas com livros ou galões de 5L para simular musculação.</p>
+                <p><b class="text-white">3. Séries:</b> Cada missão exige 3 rodadas completas. O botão só deve ser acionado após a conclusão total.</p>
+                <p><b class="text-white">4. Penalidade Real:</b> 24h de inatividade resulta em perda de HP. Se o HP zerar, você perde 1 Nível de Sincronia.</p>
             </div>
-            <div class="glass p-6 rounded-3xl border-b-4 border-cyan-900">
-                <p class="text-[10px] text-gray-500 uppercase font-bold mb-2">Agilidade (AGI)</p>
-                <p id="s-agi" class="text-4xl font-black text-white font-orb">10</p>
-            </div>
-        </div>
-        <div class="glass p-8 rounded-[2rem] mt-4">
-            <h3 class="text-gold font-orb text-xs mb-6 uppercase tracking-widest">Habilidades Passivas</h3>
-            <div id="skills-list" class="space-y-6">
-                </div>
         </div>
     </div>
 
     <script>
         const EXERCISES = {
-            "EMPURRAR": [
-                {n: "Flexão de Joelhos", d: "Foco técnico inicial", v: "https://www.youtube.com/results?search_query=flexao+joelhos+correto"},
-                {n: "Flexão Padrão", d: "Mantenha o core rígido", v: "https://www.youtube.com/results?search_query=flexao+padrao+execucao"},
-                {n: "Flexão Diamante", d: "Foco total em Tríceps", v: "https://www.youtube.com/results?search_query=flexao+diamante+perfeita"},
-                {n: "One Arm Pushup", d: "Domínio da Força", v: "https://www.youtube.com/results?search_query=one+arm+pushup+tutorial"}
+            "EMPURRAR (FORÇA)": [
+                {n: "Flexão de Joelhos", d: "Básico - Use cadência 2-1-2", v: "https://www.youtube.com/results?search_query=flexao+joelhos+tutorial"},
+                {n: "Flexão Padrão", d: "Intermediário - Mochila com peso", v: "https://www.youtube.com/results?search_query=flexao+padrao+correta"},
+                {n: "Flexão Diamante", d: "Avançado - Foco total em Tríceps", v: "https://www.youtube.com/results?search_query=diamond+pushup+form"},
+                {n: "One Arm Pushup", d: "Mestre - Força unilateral pura", v: "https://www.youtube.com/results?search_query=one+arm+pushup"}
             ],
-            "TRAÇÃO": [
-                {n: "Remada Invertida", d: "Use mesa ou barra baixa", v: "https://www.youtube.com/results?search_query=remada+invertida+casa"},
-                {n: "Remada Curvada", d: "Mochila ou Galões", v: "https://www.youtube.com/results?search_query=remada+curvada+com+carga"},
-                {n: "Barra Fixa", d: "Puxada vertical", v: "https://www.youtube.com/results?search_query=barra+fixa+tutorial"},
-                {n: "Muscle Up", d: "Explosão suprema", v: "https://www.youtube.com/results?search_query=muscle+up+tutorial"}
+            "TRAÇÃO (DORSO)": [
+                {n: "Remada Invertida", d: "Use uma mesa resistente", v: "https://www.youtube.com/results?search_query=australian+pull+up+home"},
+                {n: "Remada Curvada", d: "Use Galões ou Mochila pesada", v: "https://www.youtube.com/results?search_query=remada+curvada+com+peso+em+casa"},
+                {n: "Barra Fixa", d: "Puxada clássica", v: "https://www.youtube.com/results?search_query=pull+up+tutorial"},
+                {n: "Muscle Up", d: "Explosão de Rank S", v: "https://www.youtube.com/results?search_query=muscle+up+tutorial"}
             ],
-            "BASE": [
-                {n: "Agachamento Global", d: "Amplitude máxima", v: "https://www.youtube.com/results?search_query=agachamento+profundo+correto"},
-                {n: "Agacho com Carga", d: "Mochila Pesada", v: "https://www.youtube.com/results?search_query=agachamento+com+mochila"},
-                {n: "Pistol Squat", d: "Equilíbrio e Força", v: "https://www.youtube.com/results?search_query=pistol+squat+tutorial"},
-                {n: "Pistol com Carga", d: "Rank S de Pernas", v: "https://www.youtube.com/results?search_query=pistol+squat+with+weight"}
+            "BASE (PERNAS)": [
+                {n: "Agachamento", d: "Pés paralelos, coluna reta", v: "https://www.youtube.com/results?search_query=agachamento+livre+execucao"},
+                {n: "Agacho com Carga", d: "Segure Galões ou use Mochila", v: "https://www.youtube.com/results?search_query=weighted+squats+at+home"},
+                {n: "Pistol Squat", d: "Agachamento unilateral", v: "https://www.youtube.com/results?search_query=pistol+squat+tutorial"},
+                {n: "Pistol com Carga", d: "Nível Monarca", v: "https://www.youtube.com/results?search_query=weighted+pistol+squat"}
             ],
-            "NÚCLEO": [
-                {n: "Prancha Abdominal", d: "Contração total", v: "https://www.youtube.com/results?search_query=prancha+abdominal+tempo"},
-                {n: "L-Sit no Chão", d: "Força de Core", v: "https://www.youtube.com/results?search_query=L+sit+tutorial"},
-                {n: "Burpees", d: "Potência Aeróbica", v: "https://www.youtube.com/results?search_query=burpees+como+fazer"},
-                {n: "Handstand Pushups", d: "Ombros de Ferro", v: "https://www.youtube.com/results?search_query=handstand+pushups+tutorial"}
+            "CORE (NÚCLEO)": [
+                {n: "Prancha", d: "Contração abdominal constante", v: "https://www.youtube.com/results?search_query=prancha+abdominal+correta"},
+                {n: "L-Sit", d: "Força de compressão", v: "https://www.youtube.com/results?search_query=l-sit+tutorial"},
+                {n: "Burpees", d: "Resistência cardiovascular", v: "https://www.youtube.com/results?search_query=burpee+tutorial"},
+                {n: "HSPU", d: "Flexão plantar invertida", v: "https://www.youtube.com/results?search_query=handstand+pushup+tutorial"}
             ]
         };
 
-        let p = JSON.parse(localStorage.getItem('solo_final_v17')) || { lvl:1, xp:0, next:1000, hp:100, f:10, a:10 };
+        const SKILLS = [
+            {lvl: 5, n: "Vontade de Aço", d: "Penalidade de HP reduzida em 50%"},
+            {lvl: 10, n: "Mestre Híbrido", d: "Ganho de XP aumentado em 25%"},
+            {lvl: 15, n: "Recuperação Rápida", d: "+10 HP por treino concluído"},
+            {lvl: 25, n: "O Monarca", d: "Título de Soberania Destravado"}
+        ];
+
+        let s = JSON.parse(localStorage.getItem('solo_omega_v19')) || { lvl:1, xp:0, next:1000, hp:100, f:10, a:10, last:Date.now() };
 
         function update() {
-            document.getElementById('lvl-display').innerText = p.lvl.toString().padStart(2, '0');
-            document.getElementById('xp-n').innerText = Math.floor(p.xp);
-            document.getElementById('next-xp-n').innerText = Math.floor(p.next);
-            document.getElementById('xp-b').style.width = (p.xp/p.next*100) + "%";
-            document.getElementById('hp-n').innerText = p.hp;
-            document.getElementById('hp-b').style.width = p.hp + "%";
-            document.getElementById('s-for').innerText = p.f;
-            document.getElementById('s-agi').innerText = p.a;
+            // Penalidade
+            let h = (Date.now() - s.last) / 3600000;
+            if(h > 24) { s.hp -= 20; s.last = Date.now(); }
+            if(s.hp <= 0) { s.lvl = Math.max(1, s.lvl-1); s.hp = 100; }
+
+            document.getElementById('lvl-display').innerText = s.lvl.toString().padStart(2, '0');
+            document.getElementById('xp-n-txt').innerText = `${Math.floor(s.xp)} / ${Math.floor(s.next)}`;
+            document.getElementById('xp-b').style.width = (s.xp/s.next*100) + "%";
+            document.getElementById('hp-n').innerText = s.hp + "%";
+            document.getElementById('hp-b').style.width = s.hp + "%";
+            document.getElementById('s-for').innerText = s.f;
+            document.getElementById('s-agi').innerText = s.a;
             
             const r = ["D", "C", "B", "A", "S", "SS", "MONARCA"];
-            document.getElementById('rank').innerText = "RANK " + r[Math.min(Math.floor(p.lvl/5), 6)];
+            document.getElementById('rank').innerText = "RANK " + r[Math.min(Math.floor(s.lvl/5), 6)];
             
             renderQuests();
-            localStorage.setItem('solo_final_v17', JSON.stringify(p));
+            renderSkills();
+            localStorage.setItem('solo_omega_v19', JSON.stringify(s));
         }
 
         function renderQuests() {
             const div = document.getElementById('tab-missões');
             div.innerHTML = "";
-            let tier = Math.min(Math.floor((p.lvl-1)/5), 3);
+            let tier = Math.min(Math.floor((s.lvl-1)/5), 3);
             Object.keys(EXERCISES).forEach(cat => {
-                let m = 10 + (p.lvl % 5) * 2;
+                let m = 10 + (s.lvl % 5) * 2;
                 let ex = EXERCISES[cat][tier];
                 div.innerHTML += `
-                <div class="glass p-7 rounded-[2.5rem] card-workout flex justify-between items-center shadow-xl">
-                    <div class="flex-1">
-                        <div class="flex items-center gap-3 mb-1">
-                             <p class="text-[10px] text-cyan-500 font-black font-orb uppercase tracking-widest">${cat}</p>
-                             <a href="${ex.v}" target="_blank" class="text-white/20 hover:text-cyan-400">
-                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17 10.5V7a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h12a1 1 0 001-1v-3.5l4 4v-11l-4 4z"/></svg>
-                             </a>
+                <div class="system-panel p-6 border-l-4 border-cyan-500">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <p class="text-[8px] text-cyan-500 font-sys uppercase tracking-[0.3em] mb-1 italic">${cat}</p>
+                            <h3 class="text-xl font-black italic uppercase">${ex.n}</h3>
                         </div>
-                        <h3 class="text-2xl font-black uppercase leading-none mb-1">${ex.n}</h3>
-                        <p class="text-gray-500 text-xs italic mb-4">${ex.d}</p>
-                        <p class="text-sm font-black text-white font-orb">${m} REPS <span class="text-gray-700 font-normal">X 3 SÉRIES</span></p>
+                        <a href="${ex.v}" target="_blank" class="p-2 border border-cyan-500/20 text-cyan-500">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17 10.5V7a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h12a1 1 0 001-1v-3.5l4 4v-11l-4 4z"/></svg>
+                        </a>
                     </div>
-                    <button onclick="finishQuest(250)" class="ml-4 bg-cyan-500 text-black font-black text-xs px-6 py-4 rounded-2xl shadow-[0_5px_15px_rgba(0,242,255,0.4)] uppercase">Concluir</button>
+                    <div class="flex justify-between items-end">
+                        <div class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
+                            Metas: <span class="text-white">${m} REPS</span> <br>
+                            Séries: <span class="text-white">03</span>
+                        </div>
+                        <button onclick="finish(250)" class="btn-action px-8 py-3 text-black font-black text-[10px] uppercase italic">Concluir</button>
+                    </div>
                 </div>`;
             });
         }
 
-        function finishQuest(val) {
-            p.xp += val; p.hp = Math.min(100, p.hp + 5);
-            if(p.xp >= p.next) {
-                p.lvl++; p.xp = 0; p.next *= 1.35; p.f += 5; p.a += 3;
-                alert("LIMITE ROMPIDO! NÍVEL " + p.lvl);
+        function renderSkills() {
+            const div = document.getElementById('skills-list');
+            div.innerHTML = "";
+            SKILLS.forEach(sk => {
+                let ok = s.lvl >= sk.lvl;
+                div.innerHTML += `
+                <div class="flex items-center gap-4 ${ok ? 'opacity-100' : 'opacity-20'}">
+                    <div class="w-2 h-2 rounded-full ${ok ? 'bg-cyan-400 shadow-[0_0_8px_cyan]' : 'bg-gray-800'}"></div>
+                    <div>
+                        <p class="text-[10px] font-black uppercase text-white">${sk.n} [Nível ${sk.lvl}]</p>
+                        <p class="text-[9px] text-gray-500 uppercase tracking-tighter">${sk.d}</p>
+                    </div>
+                </div>`;
+            });
+        }
+
+        function finish(xp) {
+            let mult = s.lvl >= 10 ? 1.25 : 1;
+            s.xp += (xp * mult);
+            s.hp = Math.min(100, s.hp + (s.lvl >= 15 ? 10 : 5));
+            if(s.xp >= s.next) {
+                s.lvl++; s.xp = 0; s.next *= 1.35; s.f += 5; s.a += 3;
+                alert("O SISTEMA NOTOU SEU ESFORÇO. NÍVEL AUMENTADO.");
             }
+            s.last = Date.now();
             update();
             startRest();
         }
@@ -194,10 +243,10 @@
         function skipRest() { clearInterval(window.activeT); document.getElementById('rest-overlay').classList.add('hidden'); }
 
         function showTab(t) {
-            ['tab-missões', 'tab-guia', 'tab-stats'].forEach(id => document.getElementById(id).classList.add('hidden'));
+            ['tab-missões', 'tab-stats', 'tab-guia'].forEach(id => document.getElementById(id).classList.add('hidden'));
             document.getElementById('tab-'+t).classList.remove('hidden');
-            ['btn-missões', 'btn-guia', 'btn-stats'].forEach(id => document.getElementById(id).className = 'pb-4 px-4 text-gray-500');
-            document.getElementById('btn-'+t).className = 'tab-active pb-4 px-4';
+            ['btn-missões', 'btn-stats', 'btn-guia'].forEach(id => document.getElementById(id).classList.remove('tab-active'));
+            document.getElementById('btn-'+t).classList.add('tab-active');
         }
 
         update();
