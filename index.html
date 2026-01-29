@@ -17,10 +17,23 @@
         .tab-active { color: var(--main); border-bottom: 3px solid var(--main); font-weight: 900; }
         ::-webkit-scrollbar { display: none; }
         .card-workout { transition: transform 0.2s; border-left: 4px solid var(--main); }
-        .card-workout:active { transform: scale(0.98); }
+        .btn-video { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(0, 242, 255, 0.3); }
     </style>
 </head>
 <body class="p-4 pb-40">
+
+    <div id="video-modal" class="hidden fixed inset-0 z-[300] bg-black/95 flex flex-col items-center justify-center p-4">
+        <div class="w-full max-w-md">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="video-title" class="font-orb text-cyan-400 text-sm">EXECUTANDO TÉCNICA</h3>
+                <button onclick="closeVideo()" class="text-white text-2xl">&times;</button>
+            </div>
+            <div class="aspect-video bg-gray-900 rounded-xl overflow-hidden shadow-2xl">
+                <iframe id="video-frame" class="w-full h-full" src="" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            </div>
+            <p class="mt-4 text-[10px] text-gray-500 text-center uppercase tracking-widest">Estude o movimento antes de iniciar a série</p>
+        </div>
+    </div>
 
     <div id="rest-overlay" class="hidden fixed inset-0 z-[200] bg-black/98 flex flex-col items-center justify-center">
         <h2 class="font-orb text-cyan-400 tracking-[0.4em] mb-8 text-xl animate-pulse">RECUPERAÇÃO ATIVA</h2>
@@ -31,32 +44,27 @@
             </svg>
             <div id="timer-display" class="absolute text-7xl font-orb font-black text-white">60</div>
         </div>
-        <p class="mt-10 text-gray-500 text-sm italic">"A dor é o processo de quebra de limites."</p>
         <button onclick="skipRest()" class="mt-8 px-8 py-2 border border-cyan-900 text-cyan-900 text-[10px] uppercase font-bold rounded-full">Pular Protocolo</button>
     </div>
 
     <header class="mb-6 glass p-6 rounded-3xl sticky top-0 z-50">
         <div class="flex justify-between items-start">
             <div>
-                <p id="daily-msg" class="text-[10px] text-cyan-500 font-bold uppercase mb-1 tracking-tighter italic">O sistema observa seu progresso...</p>
+                <p id="daily-msg" class="text-[10px] text-cyan-500 font-bold uppercase mb-1 italic">Analisando padrão muscular...</p>
                 <h1 id="rank" class="text-4xl font-black italic font-orb rank-up-anim uppercase">RANK D</h1>
             </div>
             <div class="text-right">
-                <p class="text-[10px] text-gray-600 font-bold uppercase">Nível Atual</p>
+                <p class="text-[10px] text-gray-600 font-bold uppercase">Sincronia</p>
                 <p class="text-5xl font-black text-white font-orb leading-none" id="lvl-display">01</p>
             </div>
         </div>
-
         <div class="mt-4 space-y-3">
-            <div class="relative h-2 bg-gray-950 rounded-full overflow-hidden border border-white/5">
+            <div class="relative h-2 bg-gray-950 rounded-full overflow-hidden">
                 <div id="xp-b" class="bar-fill h-full bg-gradient-to-r from-cyan-600 to-cyan-400" style="width: 0%"></div>
             </div>
-            <div class="flex justify-between items-center text-[10px] font-bold">
+            <div class="flex justify-between items-center text-[10px] font-bold uppercase">
                 <span class="text-cyan-400">XP: <span id="xp-n">0</span> / <span id="next-xp-n">1000</span></span>
-                <span class="text-rose-500 uppercase tracking-widest text-xs">Vitalidade: <span id="hp-n">100</span>%</span>
-            </div>
-            <div class="h-1 w-full bg-gray-950 rounded-full overflow-hidden">
-                <div id="hp-b" class="bar-fill h-full bg-rose-600" style="width: 100%"></div>
+                <span class="text-rose-500">HP: <span id="hp-n">100</span>%</span>
             </div>
         </div>
     </header>
@@ -67,116 +75,78 @@
         <button onclick="showTab('stats')" id="btn-stats" class="pb-3 px-2 text-gray-600">Status</button>
     </nav>
 
-    <div id="tab-missões" class="space-y-4">
-        </div>
+    <div id="tab-missões" class="space-y-4"></div>
 
     <div id="tab-guia" class="hidden space-y-6 pb-10">
         <div class="glass p-6 rounded-3xl border-l-4 border-cyan-500">
-            <h3 class="text-cyan-400 font-orb text-xs mb-4 uppercase tracking-widest">Protocolo de Execução</h3>
+            <h3 class="text-cyan-400 font-orb text-xs mb-4 uppercase">Instruções de Campo</h3>
             <div class="text-[13px] space-y-4 text-gray-300">
-                <p><b class="text-white">1. CADÊNCIA 2-1-2:</b> O segredo da força. Desça em 2s, segure 1s em baixo, suba em 2s.</p>
-                <p><b class="text-white">2. SÉRIES:</b> O Sistema exige 3 séries por missão. Só clique em "CONCLUIR" após fazer as 3.</p>
-                <p><b class="text-white">3. SOBRECARGA (CASA):</b> Para os treinos de força, use uma mochila com livros ou galões de 5L.</p>
-                <p><b class="text-white">4. PENALIDADES:</b> Se ficar mais de 24h sem abrir o sistema, você perde 20 de HP. Se chegar a 0 HP, você perde 1 Nível.</p>
+                <p><b class="text-white">CADÊNCIA 2-1-2:</b> O vídeo mostra o movimento, mas a velocidade quem faz é você. Conte 2s descendo, 1s parado, 2s subindo.</p>
+                <p><b class="text-white">VÍDEOS:</b> Clique no ícone de câmera para ver a execução perfeita.</p>
             </div>
-        </div>
-        <div class="glass p-6 rounded-3xl border-l-4 border-gold">
-            <h3 class="text-gold font-orb text-xs mb-2">PROGRESSÃO DE RANKS</h3>
-            <p class="text-[11px] text-gray-500 leading-relaxed uppercase">Rank D: Nvl 1 | Rank C: Nvl 5 | Rank B: Nvl 10 | Rank A: Nvl 15 | Rank S: Nvl 20 | Monarca: Nvl 25+</p>
         </div>
     </div>
 
     <div id="tab-stats" class="hidden space-y-4">
         <div class="grid grid-cols-2 gap-4">
-            <div class="glass p-5 rounded-2xl">
-                <p class="text-[10px] text-gray-600 uppercase mb-1">Força Física</p>
+            <div class="glass p-5 rounded-2xl text-center">
+                <p class="text-[10px] text-gray-600 uppercase mb-1">STR (Força)</p>
                 <p id="s-for" class="text-3xl font-black text-white">10</p>
             </div>
-            <div class="glass p-5 rounded-2xl">
-                <p class="text-[10px] text-gray-600 uppercase mb-1">Agilidade</p>
+            <div class="glass p-5 rounded-2xl text-center">
+                <p class="text-[10px] text-gray-600 uppercase mb-1">AGI (Agilidade)</p>
                 <p id="s-agi" class="text-3xl font-black text-white">10</p>
             </div>
-        </div>
-        <div class="glass p-6 rounded-3xl">
-            <h3 class="text-gold font-orb text-xs mb-4 uppercase tracking-tighter">Habilidades Passivas Destravadas</h3>
-            <div id="skills-list" class="space-y-4">
-                </div>
-            <button onclick="resetAll()" class="w-full mt-10 text-[9px] text-red-900 font-bold uppercase">Apagar Registros do Jogador</button>
         </div>
     </div>
 
     <script>
+        // DATABASE DE EXERCÍCIOS COM VÍDEOS (LINKS YOUTUBE EMBED)
         const EXERCISES = {
-            "EMPURRAR (FORÇA BRUTA)": [
-                {n: "Flexão de Joelhos", d: "Calistenia Básica - Foco em Forma"},
-                {n: "Flexão Padrão (Mochila Opcional)", d: "Adicione peso se estiver fácil"},
-                {n: "Flexão Diamante", d: "Foco total em Tríceps e Explosão"},
-                {n: "One Arm Pushup", d: "Domínio total da Força de Empurrar"}
+            "EMPURRAR": [
+                {n: "Flexão de Joelhos", d: "Básico", v: "https://www.youtube.com/embed/jWxvtyS5S8I"},
+                {n: "Flexão Padrão", d: "Intermediário", v: "https://www.youtube.com/embed/IODxDxX7oi4"},
+                {n: "Flexão Diamante", d: "Avançado", v: "https://www.youtube.com/embed/J0DnG1_S92I"},
+                {n: "One Arm Pushup", d: "Monarca", v: "https://www.youtube.com/embed/2_m6T-NNo-4"}
             ],
-            "TRAÇÃO (DORSO E BÍCEPS)": [
-                {n: "Remada Invertida (Mesa ou Toalha)", d: "Foco em retração escapular"},
-                {n: "Remada Curvada (Galões/Mochila)", d: "Musculação pura em casa"},
-                {n: "Puxada Alta (Barra)", d: "Calistenia nível superior"},
-                {n: "Muscle Up", d: "A habilidade suprema de tração"}
+            "TRAÇÃO": [
+                {n: "Remada Invertida", d: "Básico", v: "https://www.youtube.com/embed/hBfCO258TfE"},
+                {n: "Remada Curvada (Peso)", d: "Intermediário", v: "https://www.youtube.com/embed/6uL-AovfH-I"},
+                {n: "Puxada Alta", d: "Avançado", v: "https://www.youtube.com/embed/eGo4IYlbE5g"},
+                {n: "Muscle Up", d: "Monarca", v: "https://www.youtube.com/embed/pSSTid8WfAc"}
             ],
-            "BASE (MEMBROS INFERIORES)": [
-                {n: "Agachamento Global", d: "Cadência 2-1-2 lenta"},
-                {n: "Agacho com Carga (Mochila/Galão)", d: "Hipertrofia de base"},
-                {n: "Pistol Squat (Agacho 1 Perna)", d: "Equilíbrio de Rank A"},
-                {n: "Pistol Squat com Sobrecarga", d: "Força de Rank S"}
+            "BASE": [
+                {n: "Agachamento", d: "Básico", v: "https://www.youtube.com/embed/Xq_7SInVfPU"},
+                {n: "Agacho com Carga", d: "Intermediário", v: "https://www.youtube.com/embed/Dy28SREv6P8"},
+                {n: "Pistol Squat", d: "Avançado", v: "https://www.youtube.com/embed/qDcniqddTeE"},
+                {n: "Pistol Squat Carga", d: "Monarca", v: "https://www.youtube.com/embed/qDcniqddTeE"}
             ],
-            "NÚCLEO E AGILIDADE": [
-                {n: "Prancha + Polichinelo", d: "Resistência Nível 1"},
-                {n: "L-Sit (No Chão)", d: "Força de Core Estática"},
-                {n: "Burpees Explosivos", d: "Potência Aeróbica Monarca"},
-                {n: "Handstand Pushups", d: "Controle de Gravidade"}
+            "NÚCLEO": [
+                {n: "Prancha Abdominal", d: "Básico", v: "https://www.youtube.com/embed/pSHjTRCQxIw"},
+                {n: "L-Sit", d: "Intermediário", v: "https://www.youtube.com/embed/I6V9S8vI1mY"},
+                {n: "Burpees Explosivos", d: "Avançado", v: "https://www.youtube.com/embed/auBLPXO8nU4"},
+                {n: "Handstand Pushups", d: "Monarca", v: "https://www.youtube.com/embed/h_9_m8_O_o8"}
             ]
         };
 
-        const SKILLS = [
-            {lvl: 5, n: "VONTADE DE AÇO", d: "Penalidade de HP reduzida em 50%"},
-            {lvl: 10, n: "CALISTÊNICO HÍBRIDO", d: "XP de treino aumentado em 25%"},
-            {lvl: 15, n: "RECUPERAÇÃO RÁPIDA", d: "Ganha +10 HP por cada treino concluído"},
-            {lvl: 25, n: "SOBERANIA", d: "Título de Monarca Destravado"}
-        ];
-
-        const MESSAGES = ["A dor é o anúncio da força.", "O sistema não aceita desculpas.", "Um passo por dia, um Rank por vez.", "Treine até que sua sombra não te alcance."];
-
-        let p = JSON.parse(localStorage.getItem('solo_ultimate_v14')) || {
-            lvl:1, xp:0, next:1000, hp:100, f:10, a:10, pots:0, last:Date.now()
+        let p = JSON.parse(localStorage.getItem('solo_ultimate_v15')) || {
+            lvl:1, xp:0, next:1000, hp:100, f:10, a:10, last:Date.now()
         };
 
-        function speak(t) {
-            const m = new SpeechSynthesisUtterance(t);
-            m.lang = 'pt-BR'; m.rate = 1.1;
-            window.speechSynthesis.speak(m);
-        }
-
         function update() {
-            let diff = (Date.now() - p.last) / 3600000;
-            if(diff > 24) { 
-                let loss = p.lvl >= 5 ? 10 : 20;
-                p.hp -= loss; p.last = Date.now();
-                speak("Aviso: Penalidade de inatividade aplicada.");
-            }
-            if(p.hp <= 0) { p.lvl = Math.max(1, p.lvl-1); p.hp = 100; speak("Falha crítica. Nível reduzido."); }
-
             document.getElementById('lvl-display').innerText = p.lvl.toString().padStart(2, '0');
             document.getElementById('xp-n').innerText = Math.floor(p.xp);
             document.getElementById('next-xp-n').innerText = Math.floor(p.next);
             document.getElementById('xp-b').style.width = (p.xp/p.next*100) + "%";
             document.getElementById('hp-n').innerText = p.hp;
-            document.getElementById('hp-b').style.width = p.hp + "%";
             document.getElementById('s-for').innerText = p.f;
             document.getElementById('s-agi').innerText = p.a;
-            document.getElementById('daily-msg').innerText = MESSAGES[Math.floor(Math.random()*MESSAGES.length)];
-
+            
             const ranks = ["D", "C", "B", "A", "S", "SS", "MONARCA"];
             document.getElementById('rank').innerText = "RANK " + ranks[Math.min(Math.floor(p.lvl/5), 6)];
-
+            
             renderQuests();
-            renderSkills();
-            localStorage.setItem('solo_ultimate_v14', JSON.stringify(p));
+            localStorage.setItem('solo_ultimate_v15', JSON.stringify(p));
         }
 
         function renderQuests() {
@@ -187,44 +157,41 @@
                 let m = 10 + (p.lvl % 5) * 2;
                 let ex = EXERCISES[cat][tier];
                 div.innerHTML += `
-                <div class="glass p-6 rounded-3xl card-workout flex justify-between items-center">
-                    <div>
-                        <p class="text-[9px] text-cyan-500 font-black font-orb tracking-widest mb-1">${cat}</p>
-                        <h3 class="text-xl font-bold uppercase tracking-tight">${ex.n}</h3>
-                        <p class="text-gray-500 text-[11px] mb-3 font-medium">${ex.d}</p>
-                        <p class="text-xs font-black text-white">${m} REPS <span class="text-gray-600 font-normal">X 3 SÉRIES</span></p>
+                <div class="glass p-6 rounded-3xl card-workout flex flex-col gap-4">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-[9px] text-cyan-500 font-black font-orb tracking-widest uppercase mb-1">${cat}</p>
+                            <h3 class="text-xl font-bold uppercase tracking-tight">${ex.n}</h3>
+                            <p class="text-gray-500 text-[11px] font-medium uppercase italic">${ex.d}</p>
+                        </div>
+                        <button onclick="openVideo('${ex.v}', '${ex.n}')" class="btn-video p-3 rounded-xl text-cyan-400">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17 10.5V7a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h12a1 1 0 001-1v-3.5l4 4v-11l-4 4z"/></svg>
+                        </button>
                     </div>
-                    <button onclick="finishQuest(250)" class="bg-cyan-500 text-black font-black text-[10px] px-5 py-3 rounded-2xl shadow-[0_0_20px_rgba(0,242,255,0.3)]">CONCLUIR</button>
+                    <div class="flex justify-between items-end">
+                        <p class="text-xs font-black text-white">${m} REPS <span class="text-gray-600 font-normal ml-2">X 3 SÉRIES</span></p>
+                        <button onclick="finishQuest(250)" class="bg-cyan-500 text-black font-black text-[10px] px-6 py-2.5 rounded-xl shadow-lg">CONCLUIR</button>
+                    </div>
                 </div>`;
             });
         }
 
-        function renderSkills() {
-            const div = document.getElementById('skills-list');
-            div.innerHTML = "";
-            SKILLS.forEach(s => {
-                let active = p.lvl >= s.lvl;
-                div.innerHTML += `
-                <div class="flex items-start gap-4 ${active ? 'opacity-100' : 'opacity-20'}">
-                    <div class="w-2 h-2 mt-1.5 rounded-full ${active ? 'bg-gold shadow-[0_0_10px_gold]' : 'bg-gray-800'}"></div>
-                    <div>
-                        <p class="text-[11px] font-black ${active ? 'text-white' : 'text-gray-600'} font-orb uppercase">${s.n}</p>
-                        <p class="text-[9px] text-gray-500 uppercase leading-none mt-1">${s.d}</p>
-                    </div>
-                </div>`;
-            });
+        function openVideo(url, title) {
+            document.getElementById('video-title').innerText = title;
+            document.getElementById('video-frame').src = url;
+            document.getElementById('video-modal').classList.remove('hidden');
+        }
+
+        function closeVideo() {
+            document.getElementById('video-modal').classList.add('hidden');
+            document.getElementById('video-frame').src = "";
         }
 
         function finishQuest(val) {
-            let bonus = p.lvl >= 10 ? 1.25 : 1;
-            p.xp += (val * bonus);
-            p.hp = Math.min(100, p.hp + (p.lvl >= 15 ? 10 : 5));
-            p.last = Date.now();
-
+            p.xp += val; p.hp = Math.min(100, p.hp + 5); p.last = Date.now();
             if(p.xp >= p.next) {
                 p.lvl++; p.xp = 0; p.next *= 1.35; p.f += 3; p.a += 2;
-                speak("Sincronia aumentada. Nível " + p.lvl);
-                alert("SISTEMA: NOVO NÍVEL ALCANÇADO!");
+                alert("LIMITE ROMPIDO: LEVEL UP!");
             }
             update();
             startRest();
@@ -233,14 +200,11 @@
         function startRest() {
             document.getElementById('rest-overlay').classList.remove('hidden');
             let t = 60;
-            const circle = document.getElementById('timer-circle');
-            speak("Iniciando descanso. Respire.");
-            
-            let timer = setInterval(() => {
+            const timer = setInterval(() => {
                 t--;
                 document.getElementById('timer-display').innerText = t;
-                circle.style.strokeDashoffset = 691 - (t / 60 * 691);
-                if(t <= 0) skipRest();
+                document.getElementById('timer-circle').style.strokeDashoffset = 691 - (t / 60 * 691);
+                if(t <= 0) skipRest(timer);
             }, 1000);
             window.activeT = timer;
         }
@@ -248,7 +212,6 @@
         function skipRest() {
             clearInterval(window.activeT);
             document.getElementById('rest-overlay').classList.add('hidden');
-            speak("Prepare-se para o próximo round.");
         }
 
         function showTab(t) {
@@ -257,8 +220,6 @@
             ['btn-missões', 'btn-guia', 'btn-stats'].forEach(id => document.getElementById(id).className = 'pb-3 px-2 text-gray-600');
             document.getElementById('btn-'+t).className = 'tab-active pb-3 px-2';
         }
-
-        function resetAll() { if(confirm("Apagar todos os dados do Monarca?")) { localStorage.clear(); location.reload(); } }
 
         update();
     </script>
