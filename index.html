@@ -3,123 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SISTEMA DE DESPERTAR | RANK C</title>
+    <title>SISTEMA SOLO LEVELING - WENDRICK v4.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Rajdhani', sans-serif; background-color: #050505; color: #e0e0e0; }
+        body { font-family: 'Rajdhani', sans-serif; background-color: #050505; color: #e0e0e0; overflow-x: hidden; }
         .font-orbitron { font-family: 'Orbitron', sans-serif; }
-        .neon-blue { color: #00d4ff; text-shadow: 0 0 10px #00d4ff; }
+        .neon-blue { color: #00d4ff; text-shadow: 0 0 15px #00d4ff; }
         .border-neon { border: 1px solid #00d4ff; box-shadow: 0 0 15px rgba(0, 212, 255, 0.2); }
-        .progress-bar { transition: width 0.5s ease-in-out; }
-        .quest-card:hover { background: rgba(0, 212, 255, 0.1); transform: scale(1.02); transition: 0.3s; }
+        .bg-dark-card { background: rgba(10, 10, 15, 0.95); }
+        .inventory-slot { background: rgba(20, 20, 30, 0.8); border: 1px solid #1e293b; transition: 0.3s; }
+        .inventory-slot:hover { border-color: #00d4ff; background: rgba(0, 212, 255, 0.05); }
+        .progress-fill { transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
+        .penalty-bg { background-color: #2a0000 !important; transition: 1s; }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="p-4 bg-black min-h-screen border-t-4 border-blue-600">
 
-    <div class="max-w-4xl mx-auto border-neon bg-black p-6 rounded-lg mb-8 relative overflow-hidden">
-        <div class="flex justify-between items-center mb-4">
-            <div>
-                <h1 class="font-orbitron text-3xl neon-blue uppercase tracking-widest">WENDRICK</h1>
-                <p class="text-gray-400">RANK: <span class="text-white font-bold">C- (ECTOMORFO EM EVOLUÇÃO)</span></p>
-            </div>
-            <div class="text-right">
-                <p class="text-sm text-blue-400 font-bold uppercase">Nível 3</p>
-                <p class="text-xs text-gray-500">HP: 100 / 100</p>
-            </div>
-        </div>
-
-        <div class="space-y-4">
-            <div>
-                <div class="flex justify-between text-xs mb-1">
-                    <span>XP DO JOGADOR</span>
-                    <span>250 / 1822</span>
-                </div>
-                <div class="w-full bg-gray-800 h-2 rounded-full">
-                    <div class="bg-blue-500 h-2 rounded-full progress-bar" style="width: 14%"></div>
-                </div>
-            </div>
-            <div>
-                <div class="flex justify-between text-xs mb-1 uppercase tracking-tighter">
-                    <span>Progresso de Massa (Peso)</span>
-                    <span class="neon-blue">58.0kg / 65.0kg</span>
-                </div>
-                <div class="w-full bg-gray-800 h-3 rounded-full border border-blue-900">
-                    <div class="bg-cyan-400 h-3 rounded-full progress-bar shadow-[0_0_10px_#22d3ee]" style="width: 89%"></div>
-                </div>
-            </div>
-        </div>
+    <div id="penaltyOverlay" class="fixed inset-0 bg-black/95 z-50 hidden flex-col items-center justify-center text-center p-6">
+        <h1 class="text-6xl font-orbitron text-red-600 mb-4 animate-pulse">MISSÃO FALHADA</h1>
+        <p class="text-xl text-white mb-8 uppercase">Penalidade: O corpo está a entrar em estado de atrofia.</p>
+        <button onclick="confirmarPunicao()" class="px-10 py-4 border-2 border-red-600 text-red-600 font-bold hover:bg-red-600 hover:text-white transition-all uppercase">Aceitar Punição</button>
     </div>
 
-    <div class="max-w-4xl mx-auto">
-        <h2 class="font-orbitron text-xl mb-6 flex items-center">
-            <span class="mr-2">▶</span> MISSÕES DIÁRIAS: <span class="ml-2 text-yellow-500 uppercase">Preparação para o Despertar</span>
+    <div class="max-w-2xl mx-auto pb-20">
+        <div class="border-neon p-6 rounded-sm bg-dark-card mb-6 relative">
+            <div class="flex justify-between items-start mb-6">
+                <div>
+                    <h1 class="font-orbitron text-4xl neon-blue tracking-tighter">WENDRICK</h1>
+                    <div class="flex gap-4 mt-2">
+                        <span class="text-xs bg-blue-900/40 border border-blue-500/50 px-2 py-1 rounded text-blue-300 font-bold">RANK: C-</span>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm font-orbitron">LVL. <span id="lvlDisplay">03</span></p>
+                    <button onclick="sistemaVoz('Analisando status do jogador Wendrick. Status estável.')" class="text-[10px] text-blue-500 underline uppercase mt-2">Check Voice</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mb-6 text-sm font-bold tracking-widest">
+                <p>FORÇA [FOR] <span class="neon-blue" id="stat-for">18</span></p>
+                <p>VITALIDADE [VIT] <span class="text-green-500" id="stat-vit">15</span></p>
+            </div>
+
+            <div class="space-y-1">
+                <div class="flex justify-between text-[10px] tracking-widest uppercase text-blue-400 font-bold">
+                    <span>Massa Corporal</span>
+                    <span>58.0kg / 65.0kg</span>
+                </div>
+                <div class="w-full bg-gray-900 h-2 rounded-full overflow-hidden border border-blue-900/30">
+                    <div class="bg-cyan-400 h-full progress-fill shadow-[0_0_15px_#00d4ff]" style="width: 89.2%"></div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="font-orbitron text-lg mb-4 flex items-center gap-2 text-white">
+            <span class="text-green-500">■</span> INVENTÁRIO DE NUTRIÇÃO
         </h2>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            
-            <div class="quest-card border border-gray-800 p-4 rounded bg-zinc-900 flex justify-between items-center">
-                <div>
-                    <h3 class="text-blue-400 font-bold uppercase text-sm tracking-widest">Empurrar [RANK C]</h3>
-                    <p class="text-lg">Flexão Declinada (Pés no Sofá)</p>
-                    <p class="text-xs text-gray-500 mt-1 italic">Cadência: 4s descida | Foco: Peito Superior</p>
-                </div>
-                <div class="text-right">
-                    <span class="text-xs border border-blue-500 p-1 rounded">ATÉ A FALHA</span>
-                </div>
+        <div class="grid grid-cols-3 gap-2 mb-8">
+            <div onclick="usarItem('Proteína', 1, 'FOR')" class="inventory-slot p-3 rounded text-center cursor-pointer group">
+                <div class="text-2xl group-active:scale-90 transition">🍗</div>
+                <p class="text-[9px] mt-1 text-gray-500 uppercase">+1 FOR</p>
             </div>
-
-            <div class="quest-card border border-gray-800 p-4 rounded bg-zinc-900 flex justify-between items-center">
-                <div>
-                    <h3 class="text-blue-400 font-bold uppercase text-sm tracking-widest">Tração [RANK C]</h3>
-                    <p class="text-lg">Remada Invertida c/ Isometria</p>
-                    <p class="text-xs text-gray-500 mt-1 italic">Segurar 3s no topo | Foco: Densidade</p>
-                </div>
-                <div class="text-right">
-                    <span class="text-xs border border-blue-500 p-1 rounded">12 REPS</span>
-                </div>
-            </div>
-
-            <div class="quest-card border border-gray-800 p-4 rounded bg-zinc-900 flex justify-between items-center">
-                <div>
-                    <h3 class="text-blue-400 font-bold uppercase text-sm tracking-widest">Base [RANK C]</h3>
-                    <p class="text-lg">Agachamento Búlgaro</p>
-                    <p class="text-xs text-gray-500 mt-1 italic">Amplitude total | Foco: Quadríceps</p>
-                </div>
-                <div class="text-right">
-                    <span class="text-xs border border-blue-500 p-1 rounded">10 CADA LADO</span>
-                </div>
-            </div>
-
-            <div class="quest-card border border-gray-800 p-4 rounded bg-zinc-900 flex justify-between items-center">
-                <div>
-                    <h3 class="text-blue-400 font-bold uppercase text-sm tracking-widest">Núcleo [RANK C]</h3>
-                    <p class="text-lg">Prancha de Tensão Máxima</p>
-                    <p class="text-xs text-gray-500 mt-1 italic">Contrair Abs 100% | Foco: Estabilidade</p>
-                </div>
-                <div class="text-right">
-                    <span class="text-xs border border-blue-500 p-1 rounded">45 SEG</span>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="mt-8 p-4 border border-red-900 bg-red-950/20 rounded text-center">
-            <p class="text-red-500 font-bold uppercase tracking-widest text-sm">Aviso de Penalidade</p>
-            <p class="text-xs text-gray-400">Falhar em completar a ingestão calórica diária resultará em perda de massa muscular (HP).</p>
-        </div>
-    </div>
-
-    <script>
-        // Sistema de cliques para marcar missão (opcional)
-        document.querySelectorAll('.quest-card').forEach(card => {
-            card.addEventListener('click', () => {
-                card.classList.toggle('opacity-30');
-                card.classList.toggle('grayscale');
-            });
-        });
-
-        console.log("SISTEMA SOLO LEVELING ATUALIZADO: Wendrick Rank C-");
-    </script>
-</body>
-</html>
+            <div onclick="usarItem('Carboidrato', 1, 'VIT')" class="inventory-slot p-3 rounded text-center cursor-pointer group">
+                <div class="text-2xl group-active:scale-90 transition">🍚</div>
+                
