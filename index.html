@@ -253,68 +253,57 @@
     </script>
 </body>
 </html>
-import time
-
-# --- PLAYER SYSTEM CONFIGURATION ---
-player_stats = {
-    "name": "User",
-    "rank": "C- (Evolution)",
-    "attributes": {
-        "height": 1.74,
-        "current_weight": 58.0,
-        "target_weight": 65.0,
-        "biotype": "Ectomorph"
-    },
-    "current_buffs": ["Post-Workout Recovery"],
-    "daily_xp": 0
-}
-
-# --- MISSION DATABASE (RANK C UPDATE) ---
-daily_missions = [
-    {
-        "id": "push_01",
-        "name": "Flexão Declinada (Pés no Sofá)",
-        "reps_target": 12,
-        "tempo_cadence": "4-0-2-0", # 4s descida
-        "xp": 50
-    },
-    {
-        "id": "pull_01",
-        "name": "Remada Invertida c/ Isometria",
-        "reps_target": 10,
-        "hold_time": "3s no topo",
-        "xp": 50
-    },
-    {
-        "id": "core_01",
-        "name": "Prancha de Aço (Tensão Máxima)",
-        "duration": 45,
-        "xp": 30
+<script>
+// --- ATUALIZAÇÃO DE STATUS DO JOGADOR ---
+const playerStats = {
+    nome: "Wendrick",
+    nivel: 3,
+    rank: "C-", // Evoluído de D
+    xp: 250,
+    xpNecessario: 1822,
+    hp: 100,
+    atributos: {
+        altura: 1.74,
+        peso: 58.0,
+        meta: 65.0
     }
-]
+};
 
-# --- CORE LOGIC: GAIN CALCULATION ---
-def check_level_up(weight):
-    if weight >= 65.0:
-        return "RANK B: WARRIOR UNLOCKED"
-    elif weight >= 60.0:
-        return "RANK C+: ELITE TRAINEE"
-    else:
-        return "RANK C-: RECRUIT"
+// --- NOVA LISTA DE MISSÕES (RANK C) ---
+const dailyQuests = [
+    {
+        categoria: "EMPURRAR (PEITO)",
+        nome: "Flexão Declinada (Pés no Sofá)",
+        metas: "Até a Falha",
+        series: 4,
+        instrucao: "Descer em 4 segundos para focar no peito superior."
+    },
+    {
+        categoria: "TRAÇÃO (DORSO)",
+        nome: "Remada Invertida c/ Pausa",
+        metas: "12 Reps",
+        series: 3,
+        instrucao: "Segurar 2 segundos no topo do movimento."
+    },
+    {
+        categoria: "BASE (PERNAS)",
+        nome: "Agachamento Búlgaro",
+        metas: "10 Reps cada perna",
+        series: 3,
+        instrucao: "Pé de trás apoiado no sofá."
+    },
+    {
+        categoria: "CORE (NÚCLEO)",
+        nome: "Prancha de Tensão Máxima",
+        metas: "45 Segundos",
+        series: 3,
+        instrucao: "Contrair o abdómen ao máximo, empurrando o chão."
+    }
+];
 
-def execute_rest_timer(seconds):
-    print(f"[SYSTEM] Iniciando descanso de {seconds}s...")
-    # time.sleep(seconds) # Simulação de timer
-    return "Ready for Next Set!"
-
-# --- SYSTEM OUTPUT ---
-print(f"--- {player_stats['name']} STATUS SYSTEM ---")
-print(f"RANK: {player_stats['rank']}")
-print(f"OBJETIVO: {player_stats['attributes']['target_weight']} kg")
-print(f"PRÓXIMA MISSÃO: {daily_missions[0]['name']}")
-print("---------------------------------------")
-
-# Simulação de verificação de peso
-current_rank = check_level_up(player_stats['attributes']['current_weight'])
-print(f"Status do Sistema: {current_rank}")
-
+// Função para renderizar na tela (adapta conforme os IDs do teu HTML)
+function atualizarInterface() {
+    // Aqui o código do teu app que desenha os elementos na tela
+    console.log("Sistema Rank C Ativado para " + playerStats.nome);
+}
+</script>
