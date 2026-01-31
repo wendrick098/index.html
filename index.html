@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SISTEMA SOLO LEVELING - WENDRICK v4.0</title>
+    <title>SISTEMA SOLO LEVELING | WENDRICK RANK C</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
@@ -11,60 +11,148 @@
         .font-orbitron { font-family: 'Orbitron', sans-serif; }
         .neon-blue { color: #00d4ff; text-shadow: 0 0 15px #00d4ff; }
         .border-neon { border: 1px solid #00d4ff; box-shadow: 0 0 15px rgba(0, 212, 255, 0.2); }
-        .bg-dark-card { background: rgba(10, 10, 15, 0.95); }
-        .inventory-slot { background: rgba(20, 20, 30, 0.8); border: 1px solid #1e293b; transition: 0.3s; }
-        .inventory-slot:hover { border-color: #00d4ff; background: rgba(0, 212, 255, 0.05); }
-        .progress-fill { transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
-        .penalty-bg { background-color: #2a0000 !important; transition: 1s; }
+        .bg-dark-card { background: rgba(10, 10, 15, 0.95); border: 1px solid #1e293b; }
+        .inventory-slot { background: rgba(20, 20, 30, 0.8); border: 1px solid #334155; transition: 0.3s; }
+        .inventory-slot:hover { border-color: #00d4ff; background: rgba(0, 212, 255, 0.1); }
+        .progress-fill { transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .quest-card { transition: 0.3s; cursor: pointer; }
+        .quest-card:hover { border-color: #00d4ff; transform: scale(1.02); }
+        .penalty-active { animation: pulse-red 1.5s infinite; background: #1a0505 !important; }
+        @keyframes pulse-red { 0%, 100% { border-color: #ef4444; box-shadow: 0 0 10px #ff0000; } 50% { border-color: #450a0a; box-shadow: 0 0 20px #7f1d1d; } }
+        #systemLog::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="p-4 bg-black min-h-screen border-t-4 border-blue-600">
+<body class="p-4 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-zinc-900 via-black to-black min-h-screen pb-10">
 
-    <div id="penaltyOverlay" class="fixed inset-0 bg-black/95 z-50 hidden flex-col items-center justify-center text-center p-6">
-        <h1 class="text-6xl font-orbitron text-red-600 mb-4 animate-pulse">MISSÃO FALHADA</h1>
-        <p class="text-xl text-white mb-8 uppercase">Penalidade: O corpo está a entrar em estado de atrofia.</p>
-        <button onclick="confirmarPunicao()" class="px-10 py-4 border-2 border-red-600 text-red-600 font-bold hover:bg-red-600 hover:text-white transition-all uppercase">Aceitar Punição</button>
+    <div id="penaltyOverlay" class="fixed inset-0 bg-black/98 z-50 hidden flex-col items-center justify-center text-center p-6 border-4 border-red-600">
+        <h1 class="text-7xl font-orbitron text-red-600 mb-2 tracking-tighter shadow-lg">MISSÃO FALHADA</h1>
+        <p class="text-xl text-white mb-10 font-bold uppercase tracking-widest">Penalidade de Estagnação Ativada</p>
+        <div class="bg-red-900/20 p-6 border border-red-600 mb-10">
+            <p class="text-red-400 font-mono">PUNIÇÃO: 100 BURPEES OU 4KM DE CORRIDA</p>
+            <p class="text-[10px] text-red-700 mt-2 italic">O sistema não tolera a falta de evolução.</p>
+        </div>
+        <button onclick="aceitarPunicao()" class="px-12 py-4 border-2 border-red-600 text-red-600 font-bold hover:bg-red-600 hover:text-white transition-all uppercase tracking-widest font-orbitron">Aceitar</button>
     </div>
 
-    <div class="max-w-2xl mx-auto pb-20">
-        <div class="border-neon p-6 rounded-sm bg-dark-card mb-6 relative">
+    <div class="max-w-2xl mx-auto">
+        
+        <div class="border-neon p-6 rounded-sm bg-dark-card mb-6 relative overflow-hidden">
             <div class="flex justify-between items-start mb-6">
                 <div>
-                    <h1 class="font-orbitron text-4xl neon-blue tracking-tighter">WENDRICK</h1>
-                    <div class="flex gap-4 mt-2">
-                        <span class="text-xs bg-blue-900/40 border border-blue-500/50 px-2 py-1 rounded text-blue-300 font-bold">RANK: C-</span>
+                    <h1 class="font-orbitron text-4xl neon-blue tracking-tighter italic">WENDRICK</h1>
+                    <div class="flex gap-3 mt-2 font-bold">
+                        <span class="text-[10px] bg-blue-900/40 border border-blue-500/50 px-2 py-1 rounded text-blue-300">RANK: C-</span>
+                        <span class="text-[10px] bg-zinc-800 border border-zinc-700 px-2 py-1 rounded text-gray-400 uppercase">Ectomorfo</span>
                     </div>
                 </div>
-                <div class="text-right">
-                    <p class="text-sm font-orbitron">LVL. <span id="lvlDisplay">03</span></p>
-                    <button onclick="sistemaVoz('Analisando status do jogador Wendrick. Status estável.')" class="text-[10px] text-blue-500 underline uppercase mt-2">Check Voice</button>
+                <div class="text-right font-orbitron">
+                    <p class="text-xs text-blue-500">NÍVEL 03</p>
+                    <p class="text-[10px] text-gray-500 mt-1 uppercase">HP: 100 / 100</p>
+                    <button onclick="verificarCheckpoint()" class="text-[9px] text-yellow-500 underline mt-2 block w-full uppercase">Checkpoint Semanal</button>
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-4 mb-6 text-sm font-bold tracking-widest">
-                <p>FORÇA [FOR] <span class="neon-blue" id="stat-for">18</span></p>
-                <p>VITALIDADE [VIT] <span class="text-green-500" id="stat-vit">15</span></p>
+            <div class="grid grid-cols-2 gap-x-8 gap-y-3 mb-6 text-sm font-bold tracking-widest">
+                <div class="flex justify-between border-b border-zinc-800 pb-1">
+                    <span class="text-gray-500">FORÇA [FOR]</span> <span class="neon-blue" id="val-for">18</span>
+                </div>
+                <div class="flex justify-between border-b border-zinc-800 pb-1">
+                    <span class="text-gray-500">VITALIDADE [VIT]</span> <span class="text-green-500" id="val-vit">15</span>
+                </div>
+                <div class="flex justify-between border-b border-zinc-800 pb-1">
+                    <span class="text-gray-400">AGILIDADE [AGI]</span> <span class="text-white">12</span>
+                </div>
+                <div class="flex justify-between border-b border-zinc-800 pb-1">
+                    <span class="text-gray-400">SENTIDO [SEN]</span> <span class="text-white">10</span>
+                </div>
             </div>
 
             <div class="space-y-1">
-                <div class="flex justify-between text-[10px] tracking-widest uppercase text-blue-400 font-bold">
-                    <span>Massa Corporal</span>
-                    <span>58.0kg / 65.0kg</span>
+                <div class="flex justify-between text-[10px] tracking-widest uppercase font-bold mb-1">
+                    <span class="text-blue-400">Progresso de Massa Corporal</span>
+                    <span class="neon-blue"><span id="currentWeightDisplay">58.0</span>kg / 65.0kg</span>
                 </div>
-                <div class="w-full bg-gray-900 h-2 rounded-full overflow-hidden border border-blue-900/30">
-                    <div class="bg-cyan-400 h-full progress-fill shadow-[0_0_15px_#00d4ff]" style="width: 89.2%"></div>
+                <div class="w-full bg-zinc-950 h-3 rounded-full border border-zinc-800 overflow-hidden shadow-inner">
+                    <div id="weightBar" class="bg-gradient-to-r from-blue-700 to-cyan-400 h-full progress-fill shadow-[0_0_15px_rgba(0,212,255,0.6)]" style="width: 89%"></div>
                 </div>
             </div>
         </div>
 
-        <h2 class="font-orbitron text-lg mb-4 flex items-center gap-2 text-white">
-            <span class="text-green-500">■</span> INVENTÁRIO DE NUTRIÇÃO
+        <h2 class="font-orbitron text-xs mb-4 flex items-center gap-2 text-white tracking-widest uppercase">
+            <span class="text-blue-500">■</span> Inventário de Consumíveis
         </h2>
-        <div class="grid grid-cols-3 gap-2 mb-8">
-            <div onclick="usarItem('Proteína', 1, 'FOR')" class="inventory-slot p-3 rounded text-center cursor-pointer group">
-                <div class="text-2xl group-active:scale-90 transition">🍗</div>
-                <p class="text-[9px] mt-1 text-gray-500 uppercase">+1 FOR</p>
+        <div class="grid grid-cols-3 gap-3 mb-8">
+            <div onclick="usarItem('🍗 Proteína de Classe Alta', 1, 'FOR')" class="inventory-slot p-3 rounded group cursor-pointer text-center">
+                <div class="text-2xl mb-1 group-active:scale-90 transition">🍗</div>
+                <p class="text-[9px] text-blue-400 font-bold uppercase">+1 FOR</p>
             </div>
-            <div onclick="usarItem('Carboidrato', 1, 'VIT')" class="inventory-slot p-3 rounded text-center cursor-pointer group">
-                <div class="text-2xl group-active:scale-90 transition">🍚</div>
-                
+            <div onclick="usarItem('🍚 Carboidrato de Energia', 1, 'VIT')" class="inventory-slot p-3 rounded group cursor-pointer text-center">
+                <div class="text-2xl mb-1 group-active:scale-90 transition">🍚</div>
+                <p class="text-[9px] text-green-400 font-bold uppercase">+1 VIT</p>
+            </div>
+            <div onclick="usarItem('🧪 Elixir Hipercalórico', 2, 'VIT')" class="inventory-slot p-3 rounded group cursor-pointer text-center border-yellow-900/40">
+                <div class="text-2xl mb-1 group-active:scale-90 transition">🧪</div>
+                <p class="text-[9px] text-yellow-500 font-bold uppercase">+2 VIT</p>
+            </div>
+        </div>
+
+        <div id="timerBox" class="hidden border-2 border-cyan-500 p-6 mb-6 bg-cyan-950/20 rounded-sm text-center animate-pulse">
+            <p class="text-[10px] text-cyan-400 uppercase tracking-[0.3em] mb-2 font-bold font-orbitron">Recuperação Muscular em Curso</p>
+            <h2 id="timerDisplay" class="text-6xl font-orbitron text-white">01:00</h2>
+        </div>
+
+        <div id="questList" class="space-y-3">
+            <div onclick="fazerQuest('Flexão Declinada', 60, this)" class="quest-card bg-zinc-900/40 border border-zinc-800 p-4 rounded flex justify-between items-center group">
+                <div>
+                    <h3 class="text-blue-500 font-bold text-[10px] uppercase mb-1 tracking-widest">Empurrar [Rank C]</h3>
+                    <p class="text-lg group-hover:neon-blue transition">Flexão Declinada (Pés no Sofá)</p>
+                    <p class="text-[10px] text-gray-500 italic">Subir 2s | Descer 4s</p>
+                </div>
+                <div class="font-orbitron text-blue-400 text-sm border border-blue-900/50 px-3 py-1">SET</div>
+            </div>
+
+            <div onclick="fazerQuest('Remada Invertida', 60, this)" class="quest-card bg-zinc-900/40 border border-zinc-800 p-4 rounded flex justify-between items-center group">
+                <div>
+                    <h3 class="text-blue-500 font-bold text-[10px] uppercase mb-1 tracking-widest">Puxar [Rank C]</h3>
+                    <p class="text-lg group-hover:neon-blue transition">Remada Invertida Isométrica</p>
+                    <p class="text-[10px] text-gray-500 italic">3s de pausa no topo</p>
+                </div>
+                <div class="font-orbitron text-blue-400 text-sm border border-blue-900/50 px-3 py-1">SET</div>
+            </div>
+        </div>
+
+        <div id="systemLog" class="mt-8 h-20 overflow-y-auto text-[10px] font-mono text-blue-500/60 p-2 border-t border-zinc-900">
+            > SISTEMA CARREGADO. NICKNAME: WENDRICK.
+        </div>
+
+        <div class="mt-6 flex gap-2">
+            <button onclick="ativarPenalidade()" class="flex-1 py-4 border border-red-900/40 text-red-900 text-[10px] font-bold uppercase tracking-widest hover:bg-red-950/20">Desistir</button>
+            <button onclick="atualizarPesoManual()" class="flex-1 py-4 border border-blue-900/40 text-blue-900 text-[10px] font-bold uppercase tracking-widest hover:bg-blue-950/20">Inserir Peso</button>
+        </div>
+    </div>
+
+    <script>
+        let countdown;
+        let forVal = 18;
+        let vitVal = 15;
+
+        // VOZ DO SISTEMA
+        function sistemaFala(texto) {
+            window.speechSynthesis.cancel();
+            const msg = new SpeechSynthesisUtterance(texto);
+            msg.lang = 'pt-PT';
+            msg.rate = 0.85;
+            msg.pitch = 0.6;
+            window.speechSynthesis.speak(msg);
+            
+            const logBox = document.getElementById('systemLog');
+            logBox.innerHTML += `<br>> [SISTEMA]: ${texto.toUpperCase()}`;
+            logBox.scrollTop = logBox.scrollHeight;
+        }
+
+        function fazerQuest(nome, tempo, element) {
+            sistemaFala(`Série de ${nome} completa. Regeneração de sessenta segundos iniciada.`);
+            element.classList.add('opacity-30');
+            
+            const box = document.getElementById('timerBox');
+            const display =
