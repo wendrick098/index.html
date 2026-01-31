@@ -1,309 +1,125 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-pt">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SISTEMA DE DESPERTAR | RANK C</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:ital,wght@0,300;0,600;1,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
-        :root { --sys-blue: #00d2ff; --sys-dark: #02060c; --sys-panel: rgba(6, 11, 20, 0.95); }
-        body { 
-            background: var(--sys-dark); color: white; 
-            font-family: 'Exo 2', sans-serif; overflow-x: hidden;
-            background-image: linear-gradient(to bottom, #02060c, #050a1b);
-            min-height: 100vh;
-        }
-        .font-sys { font-family: 'Orbitron', sans-serif; }
-        .system-panel {
-            background: var(--sys-panel);
-            border: 1px solid rgba(0, 210, 255, 0.2);
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-            border-radius: 2px;
-        }
-        .rank-glitch { animation: glitch 4s infinite; text-shadow: 0 0 10px var(--sys-blue); }
-        @keyframes glitch { 0%, 90% { opacity: 1; transform: skew(0); } 92% { opacity: 0.8; transform: skew(2deg); } 94% { opacity: 1; transform: skew(-2deg); } }
-        .bar-fill { transition: width 1s cubic-bezier(0.1, 0.7, 0.1, 1); }
-        .tab-active { color: var(--sys-blue); border-bottom: 3px solid var(--sys-blue); text-shadow: 0 0 8px var(--sys-blue); }
-        .btn-action { 
-            background: linear-gradient(135deg, #003366, #00d2ff);
-            clip-path: polygon(5% 0, 100% 0, 95% 100%, 0% 100%);
-        }
-        ::-webkit-scrollbar { display: none; }
+        body { font-family: 'Rajdhani', sans-serif; background-color: #050505; color: #e0e0e0; }
+        .font-orbitron { font-family: 'Orbitron', sans-serif; }
+        .neon-blue { color: #00d4ff; text-shadow: 0 0 10px #00d4ff; }
+        .border-neon { border: 1px solid #00d4ff; box-shadow: 0 0 15px rgba(0, 212, 255, 0.2); }
+        .progress-bar { transition: width 0.5s ease-in-out; }
+        .quest-card:hover { background: rgba(0, 212, 255, 0.1); transform: scale(1.02); transition: 0.3s; }
     </style>
 </head>
-<body class="p-4 pb-32">
+<body class="p-4 md:p-8">
 
-    <div id="rest-overlay" class="hidden fixed inset-0 z-[500] bg-black/98 flex flex-col items-center justify-center">
-        <div class="text-center">
-            <h2 class="font-sys text-cyan-500 tracking-[0.5em] text-sm mb-4 animate-pulse">RECUPERAÇÃO EM ANDAMENTO</h2>
-            <div id="timer-display" class="text-9xl font-sys font-black mb-10 text-white">60</div>
-            <button onclick="skipRest()" class="border border-cyan-900 text-cyan-900 px-8 py-2 rounded-full text-[10px] uppercase font-black">Pular</button>
-        </div>
-    </div>
-
-    <header class="mb-6 mt-2">
-        <div class="flex justify-between items-end mb-4">
+    <div class="max-w-4xl mx-auto border-neon bg-black p-6 rounded-lg mb-8 relative overflow-hidden">
+        <div class="flex justify-between items-center mb-4">
             <div>
-                <p id="daily-msg" class="text-[9px] text-cyan-500 font-bold uppercase tracking-widest mb-1 italic">Sincronização com o Monarca...</p>
-                <h1 id="rank" class="text-5xl font-sys font-black rank-glitch italic uppercase">RANK D</h1>
+                <h1 class="font-orbitron text-3xl neon-blue uppercase tracking-widest">WENDRICK</h1>
+                <p class="text-gray-400">RANK: <span class="text-white font-bold">C- (ECTOMORFO EM EVOLUÇÃO)</span></p>
             </div>
             <div class="text-right">
-                <p class="text-[9px] text-gray-500 uppercase font-bold tracking-widest">Nível</p>
-                <p id="lvl-display" class="text-5xl font-sys font-black text-white leading-none">01</p>
+                <p class="text-sm text-blue-400 font-bold uppercase">Nível 3</p>
+                <p class="text-xs text-gray-500">HP: 100 / 100</p>
             </div>
         </div>
 
-        <div class="system-panel p-5 space-y-5">
+        <div class="space-y-4">
             <div>
-                <div class="flex justify-between text-[10px] font-bold mb-1 tracking-widest">
-                    <span class="text-cyan-400 italic">XP DO JOGADOR</span>
-                    <span id="xp-n-txt">0 / 1000</span>
+                <div class="flex justify-between text-xs mb-1">
+                    <span>XP DO JOGADOR</span>
+                    <span>250 / 1822</span>
                 </div>
-                <div class="h-2 bg-black/50 border border-white/5 overflow-hidden">
-                    <div id="xp-b" class="bar-fill h-full bg-cyan-400" style="width: 0%"></div>
+                <div class="w-full bg-gray-800 h-2 rounded-full">
+                    <div class="bg-blue-500 h-2 rounded-full progress-bar" style="width: 14%"></div>
                 </div>
             </div>
             <div>
-                <div class="flex justify-between text-[10px] font-bold mb-1 tracking-widest text-rose-500">
-                    <span class="italic">VITALIDADE (HP)</span>
-                    <span id="hp-n">100%</span>
+                <div class="flex justify-between text-xs mb-1 uppercase tracking-tighter">
+                    <span>Progresso de Massa (Peso)</span>
+                    <span class="neon-blue">58.0kg / 65.0kg</span>
                 </div>
-                <div class="h-1.5 bg-black/50 border border-white/5 overflow-hidden">
-                    <div id="hp-b" class="bar-fill h-full bg-rose-600 shadow-[0_0_10px_red]" style="width: 100%"></div>
+                <div class="w-full bg-gray-800 h-3 rounded-full border border-blue-900">
+                    <div class="bg-cyan-400 h-3 rounded-full progress-bar shadow-[0_0_10px_#22d3ee]" style="width: 89%"></div>
                 </div>
             </div>
-        </div>
-    </header>
-
-    <nav class="flex justify-around mb-8 border-b border-white/5 text-[11px] font-sys font-black uppercase tracking-widest">
-        <button onclick="showTab('missões')" id="btn-missões" class="tab-active py-3 px-2">Combate</button>
-        <button onclick="showTab('stats')" id="btn-stats" class="py-3 px-2 text-gray-600">Atributos</button>
-        <button onclick="showTab('guia')" id="btn-guia" class="py-3 px-2 text-gray-600">Manual</button>
-    </nav>
-
-    <div id="tab-missões" class="space-y-6"></div>
-
-    <div id="tab-stats" class="hidden space-y-6">
-        <div class="grid grid-cols-2 gap-4">
-            <div class="system-panel p-6 text-center">
-                <p class="text-[9px] text-gray-500 uppercase mb-2">Força (STR)</p>
-                <p id="s-for" class="text-4xl font-sys text-white font-black">10</p>
-            </div>
-            <div class="system-panel p-6 text-center">
-                <p class="text-[9px] text-gray-500 uppercase mb-2">Agilidade (AGI)</p>
-                <p id="s-agi" class="text-4xl font-sys text-white font-black">10</p>
-            </div>
-        </div>
-        <div class="system-panel p-6">
-            <h3 class="font-sys text-cyan-400 text-xs mb-6 uppercase tracking-[0.2em] italic border-l-2 border-cyan-400 pl-3">Habilidades Passivas</h3>
-            <div id="skills-list" class="space-y-6"></div>
-            <button onclick="resetAll()" class="w-full mt-12 text-[8px] text-red-900 font-black uppercase opacity-20">Resetar Sistema</button>
         </div>
     </div>
 
-    <div id="tab-guia" class="hidden space-y-6">
-        <div class="system-panel p-6 border-l-4 border-cyan-500">
-            <h3 class="font-sys text-cyan-400 text-xs mb-4 uppercase italic">Protocolo Monarca</h3>
-            <div class="text-[13px] space-y-5 text-gray-300 uppercase leading-relaxed tracking-tight">
-                <p><b class="text-white">1. Cadência 2-1-2:</b> O sistema exige 2s na descida, 1s de pausa estática e 2s na subida. Falhar na técnica anula o ganho.</p>
-                <p><b class="text-white">2. Sobrecarga Híbrida:</b> Se o Rank D for fácil, utilize mochilas com livros ou galões de 5L para simular musculação.</p>
-                <p><b class="text-white">3. Séries:</b> Cada missão exige 3 rodadas completas. O botão só deve ser acionado após a conclusão total.</p>
-                <p><b class="text-white">4. Penalidade Real:</b> 24h de inatividade resulta em perda de HP. Se o HP zerar, você perde 1 Nível de Sincronia.</p>
+    <div class="max-w-4xl mx-auto">
+        <h2 class="font-orbitron text-xl mb-6 flex items-center">
+            <span class="mr-2">▶</span> MISSÕES DIÁRIAS: <span class="ml-2 text-yellow-500 uppercase">Preparação para o Despertar</span>
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            <div class="quest-card border border-gray-800 p-4 rounded bg-zinc-900 flex justify-between items-center">
+                <div>
+                    <h3 class="text-blue-400 font-bold uppercase text-sm tracking-widest">Empurrar [RANK C]</h3>
+                    <p class="text-lg">Flexão Declinada (Pés no Sofá)</p>
+                    <p class="text-xs text-gray-500 mt-1 italic">Cadência: 4s descida | Foco: Peito Superior</p>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs border border-blue-500 p-1 rounded">ATÉ A FALHA</span>
+                </div>
             </div>
+
+            <div class="quest-card border border-gray-800 p-4 rounded bg-zinc-900 flex justify-between items-center">
+                <div>
+                    <h3 class="text-blue-400 font-bold uppercase text-sm tracking-widest">Tração [RANK C]</h3>
+                    <p class="text-lg">Remada Invertida c/ Isometria</p>
+                    <p class="text-xs text-gray-500 mt-1 italic">Segurar 3s no topo | Foco: Densidade</p>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs border border-blue-500 p-1 rounded">12 REPS</span>
+                </div>
+            </div>
+
+            <div class="quest-card border border-gray-800 p-4 rounded bg-zinc-900 flex justify-between items-center">
+                <div>
+                    <h3 class="text-blue-400 font-bold uppercase text-sm tracking-widest">Base [RANK C]</h3>
+                    <p class="text-lg">Agachamento Búlgaro</p>
+                    <p class="text-xs text-gray-500 mt-1 italic">Amplitude total | Foco: Quadríceps</p>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs border border-blue-500 p-1 rounded">10 CADA LADO</span>
+                </div>
+            </div>
+
+            <div class="quest-card border border-gray-800 p-4 rounded bg-zinc-900 flex justify-between items-center">
+                <div>
+                    <h3 class="text-blue-400 font-bold uppercase text-sm tracking-widest">Núcleo [RANK C]</h3>
+                    <p class="text-lg">Prancha de Tensão Máxima</p>
+                    <p class="text-xs text-gray-500 mt-1 italic">Contrair Abs 100% | Foco: Estabilidade</p>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs border border-blue-500 p-1 rounded">45 SEG</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mt-8 p-4 border border-red-900 bg-red-950/20 rounded text-center">
+            <p class="text-red-500 font-bold uppercase tracking-widest text-sm">Aviso de Penalidade</p>
+            <p class="text-xs text-gray-400">Falhar em completar a ingestão calórica diária resultará em perda de massa muscular (HP).</p>
         </div>
     </div>
 
     <script>
-        const EXERCISES = {
-            "EMPURRAR (FORÇA)": [
-                {n: "Flexão de Joelhos", d: "Básico - Use cadência 2-1-2", v: "https://www.youtube.com/results?search_query=flexao+joelhos+tutorial"},
-                {n: "Flexão Padrão", d: "Intermediário - Mochila com peso", v: "https://www.youtube.com/results?search_query=flexao+padrao+correta"},
-                {n: "Flexão Diamante", d: "Avançado - Foco total em Tríceps", v: "https://www.youtube.com/results?search_query=diamond+pushup+form"},
-                {n: "One Arm Pushup", d: "Mestre - Força unilateral pura", v: "https://www.youtube.com/results?search_query=one+arm+pushup"}
-            ],
-            "TRAÇÃO (DORSO)": [
-                {n: "Remada Invertida", d: "Use uma mesa resistente", v: "https://www.youtube.com/results?search_query=australian+pull+up+home"},
-                {n: "Remada Curvada", d: "Use Galões ou Mochila pesada", v: "https://www.youtube.com/results?search_query=remada+curvada+com+peso+em+casa"},
-                {n: "Barra Fixa", d: "Puxada clássica", v: "https://www.youtube.com/results?search_query=pull+up+tutorial"},
-                {n: "Muscle Up", d: "Explosão de Rank S", v: "https://www.youtube.com/results?search_query=muscle+up+tutorial"}
-            ],
-            "BASE (PERNAS)": [
-                {n: "Agachamento", d: "Pés paralelos, coluna reta", v: "https://www.youtube.com/results?search_query=agachamento+livre+execucao"},
-                {n: "Agacho com Carga", d: "Segure Galões ou use Mochila", v: "https://www.youtube.com/results?search_query=weighted+squats+at+home"},
-                {n: "Pistol Squat", d: "Agachamento unilateral", v: "https://www.youtube.com/results?search_query=pistol+squat+tutorial"},
-                {n: "Pistol com Carga", d: "Nível Monarca", v: "https://www.youtube.com/results?search_query=weighted+pistol+squat"}
-            ],
-            "CORE (NÚCLEO)": [
-                {n: "Prancha", d: "Contração abdominal constante", v: "https://www.youtube.com/results?search_query=prancha+abdominal+correta"},
-                {n: "L-Sit", d: "Força de compressão", v: "https://www.youtube.com/results?search_query=l-sit+tutorial"},
-                {n: "Burpees", d: "Resistência cardiovascular", v: "https://www.youtube.com/results?search_query=burpee+tutorial"},
-                {n: "HSPU", d: "Flexão plantar invertida", v: "https://www.youtube.com/results?search_query=handstand+pushup+tutorial"}
-            ]
-        };
-
-        const SKILLS = [
-            {lvl: 5, n: "Vontade de Aço", d: "Penalidade de HP reduzida em 50%"},
-            {lvl: 10, n: "Mestre Híbrido", d: "Ganho de XP aumentado em 25%"},
-            {lvl: 15, n: "Recuperação Rápida", d: "+10 HP por treino concluído"},
-            {lvl: 25, n: "O Monarca", d: "Título de Soberania Destravado"}
-        ];
-
-        let s = JSON.parse(localStorage.getItem('solo_omega_v19')) || { lvl:1, xp:0, next:1000, hp:100, f:10, a:10, last:Date.now() };
-
-        function update() {
-            // Penalidade
-            let h = (Date.now() - s.last) / 3600000;
-            if(h > 24) { s.hp -= 20; s.last = Date.now(); }
-            if(s.hp <= 0) { s.lvl = Math.max(1, s.lvl-1); s.hp = 100; }
-
-            document.getElementById('lvl-display').innerText = s.lvl.toString().padStart(2, '0');
-            document.getElementById('xp-n-txt').innerText = `${Math.floor(s.xp)} / ${Math.floor(s.next)}`;
-            document.getElementById('xp-b').style.width = (s.xp/s.next*100) + "%";
-            document.getElementById('hp-n').innerText = s.hp + "%";
-            document.getElementById('hp-b').style.width = s.hp + "%";
-            document.getElementById('s-for').innerText = s.f;
-            document.getElementById('s-agi').innerText = s.a;
-            
-            const r = ["D", "C", "B", "A", "S", "SS", "MONARCA"];
-            document.getElementById('rank').innerText = "RANK " + r[Math.min(Math.floor(s.lvl/5), 6)];
-            
-            renderQuests();
-            renderSkills();
-            localStorage.setItem('solo_omega_v19', JSON.stringify(s));
-        }
-
-        function renderQuests() {
-            const div = document.getElementById('tab-missões');
-            div.innerHTML = "";
-            let tier = Math.min(Math.floor((s.lvl-1)/5), 3);
-            Object.keys(EXERCISES).forEach(cat => {
-                let m = 10 + (s.lvl % 5) * 2;
-                let ex = EXERCISES[cat][tier];
-                div.innerHTML += `
-                <div class="system-panel p-6 border-l-4 border-cyan-500">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <p class="text-[8px] text-cyan-500 font-sys uppercase tracking-[0.3em] mb-1 italic">${cat}</p>
-                            <h3 class="text-xl font-black italic uppercase">${ex.n}</h3>
-                        </div>
-                        <a href="${ex.v}" target="_blank" class="p-2 border border-cyan-500/20 text-cyan-500">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17 10.5V7a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h12a1 1 0 001-1v-3.5l4 4v-11l-4 4z"/></svg>
-                        </a>
-                    </div>
-                    <div class="flex justify-between items-end">
-                        <div class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
-                            Metas: <span class="text-white">${m} REPS</span> <br>
-                            Séries: <span class="text-white">03</span>
-                        </div>
-                        <button onclick="finish(250)" class="btn-action px-8 py-3 text-black font-black text-[10px] uppercase italic">Concluir</button>
-                    </div>
-                </div>`;
+        // Sistema de cliques para marcar missão (opcional)
+        document.querySelectorAll('.quest-card').forEach(card => {
+            card.addEventListener('click', () => {
+                card.classList.toggle('opacity-30');
+                card.classList.toggle('grayscale');
             });
-        }
+        });
 
-        function renderSkills() {
-            const div = document.getElementById('skills-list');
-            div.innerHTML = "";
-            SKILLS.forEach(sk => {
-                let ok = s.lvl >= sk.lvl;
-                div.innerHTML += `
-                <div class="flex items-center gap-4 ${ok ? 'opacity-100' : 'opacity-20'}">
-                    <div class="w-2 h-2 rounded-full ${ok ? 'bg-cyan-400 shadow-[0_0_8px_cyan]' : 'bg-gray-800'}"></div>
-                    <div>
-                        <p class="text-[10px] font-black uppercase text-white">${sk.n} [Nível ${sk.lvl}]</p>
-                        <p class="text-[9px] text-gray-500 uppercase tracking-tighter">${sk.d}</p>
-                    </div>
-                </div>`;
-            });
-        }
-
-        function finish(xp) {
-            let mult = s.lvl >= 10 ? 1.25 : 1;
-            s.xp += (xp * mult);
-            s.hp = Math.min(100, s.hp + (s.lvl >= 15 ? 10 : 5));
-            if(s.xp >= s.next) {
-                s.lvl++; s.xp = 0; s.next *= 1.35; s.f += 5; s.a += 3;
-                alert("O SISTEMA NOTOU SEU ESFORÇO. NÍVEL AUMENTADO.");
-            }
-            s.last = Date.now();
-            update();
-            startRest();
-        }
-
-        function startRest() {
-            document.getElementById('rest-overlay').classList.remove('hidden');
-            let t = 60;
-            const it = setInterval(() => {
-                t--; document.getElementById('timer-display').innerText = t;
-                if(t <= 0) skipRest(it);
-            }, 1000);
-            window.activeT = it;
-        }
-
-        function skipRest() { clearInterval(window.activeT); document.getElementById('rest-overlay').classList.add('hidden'); }
-
-        function showTab(t) {
-            ['tab-missões', 'tab-stats', 'tab-guia'].forEach(id => document.getElementById(id).classList.add('hidden'));
-            document.getElementById('tab-'+t).classList.remove('hidden');
-            ['btn-missões', 'btn-stats', 'btn-guia'].forEach(id => document.getElementById(id).classList.remove('tab-active'));
-            document.getElementById('btn-'+t).classList.add('tab-active');
-        }
-
-        update();
+        console.log("SISTEMA SOLO LEVELING ATUALIZADO: Wendrick Rank C-");
     </script>
 </body>
 </html>
-<script>
-// --- ATUALIZAÇÃO DE STATUS DO JOGADOR ---
-const playerStats = {
-    nome: "Wendrick",
-    nivel: 3,
-    rank: "C-", // Evoluído de D
-    xp: 250,
-    xpNecessario: 1822,
-    hp: 100,
-    atributos: {
-        altura: 1.74,
-        peso: 58.0,
-        meta: 65.0
-    }
-};
-
-// --- NOVA LISTA DE MISSÕES (RANK C) ---
-const dailyQuests = [
-    {
-        categoria: "EMPURRAR (PEITO)",
-        nome: "Flexão Declinada (Pés no Sofá)",
-        metas: "Até a Falha",
-        series: 4,
-        instrucao: "Descer em 4 segundos para focar no peito superior."
-    },
-    {
-        categoria: "TRAÇÃO (DORSO)",
-        nome: "Remada Invertida c/ Pausa",
-        metas: "12 Reps",
-        series: 3,
-        instrucao: "Segurar 2 segundos no topo do movimento."
-    },
-    {
-        categoria: "BASE (PERNAS)",
-        nome: "Agachamento Búlgaro",
-        metas: "10 Reps cada perna",
-        series: 3,
-        instrucao: "Pé de trás apoiado no sofá."
-    },
-    {
-        categoria: "CORE (NÚCLEO)",
-        nome: "Prancha de Tensão Máxima",
-        metas: "45 Segundos",
-        series: 3,
-        instrucao: "Contrair o abdómen ao máximo, empurrando o chão."
-    }
-];
-
-// Função para renderizar na tela (adapta conforme os IDs do teu HTML)
-function atualizarInterface() {
-    // Aqui o código do teu app que desenha os elementos na tela
-    console.log("Sistema Rank C Ativado para " + playerStats.nome);
-}
-</script>
